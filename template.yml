@@ -1,6 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    Timeout: 180
+
 Resources:
   myDB:
     Type: AWS::Serverless::SimpleTable
@@ -16,9 +21,7 @@ Resources:
   CreateTodo:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functionWrite/
-      Handler: write.handler
-      Runtime: nodejs12.x
+      Handler: src/api/create.handler
       Events:
         apiForLambda:
           Type: Api 
@@ -29,12 +32,10 @@ Resources:
         DynamoDBWritePolicy:
           TableName: !Ref myDB
             
-  GetTodos:
+  GetTodo:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functionRead/
-      Handler: read.handler
-      Runtime: nodejs12.x
+      Handler: src/api/read.handler
       Events:
         apiForLambda:
           Type: Api 
@@ -44,3 +45,25 @@ Resources:
       Policies:
         DynamoDBReadPolicy:
           TableName: !Ref myDB
+        
+  UpdateTodo:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/api/update.handler
+      Events:
+        UpdateTodo:
+          Type: Api
+          Properties:
+            Path: /update
+            Method: put
+
+  DeleteTodo:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/api/delete.handler
+      Events:
+        DeleteTodo:
+          Type: Api
+          Properties:
+            Path: /delete
+            Method: delete
