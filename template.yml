@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  myDB:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: tabmine
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+        
+  CreateTodo:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functionWrite/
+      Handler: write.handler
+      Runtime: nodejs12.x
+      Events:
+        apiForLambda:
+          Type: Api 
+          Properties:
+            Path: /create
+            Method: post
+      Policies:
+        DynamoDBWritePolicy:
+          TableName: !Ref myDB
+            
+  GetTodos:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functionRead/
+      Handler: read.handler
+      Runtime: nodejs12.x
+      Events:
+        apiForLambda:
+          Type: Api 
+          Properties:
+            Path: /list
+            Method: get
+      Policies:
+        DynamoDBReadPolicy:
+          TableName: !Ref myDB
