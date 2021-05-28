@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const uuid = require('uuid');
 const ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 import { TodoSchema } from '../validators/joi-validator';
-import { Enums } from '../enums/enums';
+import { Config } from '../config/config';
 
 exports.handler = async (event) => {
   let response;
@@ -20,7 +20,7 @@ exports.handler = async (event) => {
     const ID = uuid.v1();
 
     const params = {
-      TableName: Enums.table,
+      TableName: Config.table,
       Item: {
         id: ID,
         todo: value

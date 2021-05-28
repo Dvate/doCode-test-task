@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
-import { Enums } from '../enums/enums';
+import { Config } from '../config/config';
 
 exports.handler = async (event) => {
     let response;
@@ -8,7 +8,7 @@ exports.handler = async (event) => {
         const { id } = event.pathParameters;
 
         const params = {
-            TableName: Enums.table,
+            TableName: Config.table,
             Key: {
                 id: id
             }
