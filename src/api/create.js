@@ -31,7 +31,7 @@ exports.handler = async (event) => {
       data = await ddb.putItem(params).promise();
       console.log("Item created successfully:", data);
       msg = 'Item created successfully';
-      status = 200;
+      status = 201;
     } catch (err) {
       console.log("Error: ", err);
       msg = err.message;

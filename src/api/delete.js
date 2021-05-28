@@ -5,7 +5,7 @@ import { Config } from '../config/config';
 exports.handler = async function (event) {
     let response;
     try {
-        const { TODO, ID } = JSON.parse(event.body);
+        const { ID } = JSON.parse(event.body);
         let data;
         let msg;
         let status;
@@ -14,18 +14,13 @@ exports.handler = async function (event) {
             TableName: Config.table,
             Key: {
                 "id": ID,
-            },
-            UpdateExpression: "set todo = :t",
-            ExpressionAttributeValues: {
-                ":t": TODO
-            },
-            ReturnValues: "UPDATED_NEW"
+            }
         };
 
         try {
-            data = await ddb.update(params).promise();
-            console.log("Item updated successfully:", data);
-            msg = 'Item updated successfully';
+            data = await ddb.delete(params).promise();
+            console.log("Item deleted successfully:", data);
+            msg = 'Item deleted successfully';
             status = 200;
         } catch (err) {
             console.log("Error: ", err);
