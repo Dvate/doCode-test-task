@@ -5,7 +5,7 @@ Resources:
   myDB:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      TableName: tabmine
+      TableName: todos
       PrimaryKey:
         Name: id
         Type: String
@@ -39,7 +39,7 @@ Resources:
         apiForLambda:
           Type: Api 
           Properties:
-            Path: /list
+            Path: /get/{id}
             Method: get
       Policies:
         DynamoDBReadPolicy:
