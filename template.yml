@@ -1,12 +1,43 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
-Globals:
-  Function:
-    Runtime: nodejs12.x
-    Timeout: 180
-
 Resources:
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors: "'*'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: todo-app
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: true
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: true
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      GenerateSecret: false
+
   myDB:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -21,11 +52,15 @@ Resources:
   CreateTodo:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/api/create.handler
+      Runtime: nodejs12.x
+      CodeUri: src/api/
+      Handler: create.handler
       Events:
-        apiForLambda:
+        Create:
           Type: Api 
           Properties:
+            RestApiId:
+              Ref: MyApi
             Path: /create
             Method: post
       Policies:
@@ -35,11 +70,15 @@ Resources:
   GetTodo:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/api/read.handler
+      Runtime: nodejs12.x
+      CodeUri: src/api/
+      Handler: read.handler
       Events:
-        apiForLambda:
+        Get:
           Type: Api 
           Properties:
+            RestApiId:
+              Ref: MyApi
             Path: /get/{id}
             Method: get
       Policies:
@@ -49,21 +88,29 @@ Resources:
   UpdateTodo:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/api/update.handler
+      Runtime: nodejs12.x
+      CodeUri: src/api/
+      Handler: update.handler
       Events:
-        UpdateTodo:
+        Update:
           Type: Api
           Properties:
+            RestApiId:
+              Ref: MyApi
             Path: /update
             Method: put
 
   DeleteTodo:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/api/delete.handler
+      Runtime: nodejs12.x
+      CodeUri: src/api/
+      Handler: delete.handler
       Events:
-        DeleteTodo:
+        Delete:
           Type: Api
           Properties:
+            RestApiId:
+              Ref: MyApi
             Path: /delete
             Method: delete

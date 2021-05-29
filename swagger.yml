@@ -1,0 +1,26 @@
+swagger: "2.0"
+info:
+  description: "This is a sample todo rest API"
+  version: "1.0.0"
+  title: "Todo app"
+paths:
+  /create:
+    post:
+      summary: "Creates new todo"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        201:
+          description: "Created"
+          content: {}
+        500:
+          description: "Internal Server Error"
+          content: {}
+      parameters:
+        - name: "Todo"
+          in: "body"
+          description: "new todo"
+          schema: 
+            $ref: "#/definitions/Todo"
