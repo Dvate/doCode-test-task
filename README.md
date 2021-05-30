@@ -1,0 +1,3 @@
+- Tried to add elasticsearch but it appeared too complex for time remaining
+- I added cognito auth but also had no time to provide login/tokenization
+- For some reason I cant connect swagger, receiving "works only with inline Swagger specified in 'DefinitionBody' property" error. Google says this can be caused of python or sam wrong version, hopefuly it works on your pc.
