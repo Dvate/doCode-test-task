@@ -7,8 +7,8 @@ import { Config } from '../config/config';
 exports.handler = async (event) => {
   let response;
   try {
-    const { TODO } = JSON.parse(event.body);
-    const { error, value } = TodoSchema.validate(TODO)
+    const { todo } = JSON.parse(event.body);
+    const { error, value } = TodoSchema.validate(todo)
     let data;
     let msg;
     let status;

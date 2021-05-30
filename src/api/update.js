@@ -5,7 +5,7 @@ import { Config } from '../config/config';
 exports.handler = async function (event) {
     let response;
     try {
-        const { TODO, ID } = JSON.parse(event.body);
+        const { todo, id } = JSON.parse(event.body);
         let data;
         let msg;
         let status;
@@ -13,11 +13,11 @@ exports.handler = async function (event) {
         const params = {
             TableName: Config.table,
             Key: {
-                "id": ID,
+                "id": id,
             },
             UpdateExpression: "set todo = :t",
             ExpressionAttributeValues: {
-                ":t": TODO
+                ":t": todo
             },
             ReturnValues: "UPDATED_NEW"
         };

@@ -1,4 +1,4 @@
-swagger: "2.0"
+swagger: "3.0.3"
 info:
   description: "This is a sample todo rest API"
   version: "1.0.0"
@@ -19,8 +19,117 @@ paths:
           description: "Internal Server Error"
           content: {}
       parameters:
-        - name: "Todo"
+        - name: TODO
           in: "body"
+          type: string
+          required: true
           description: "new todo"
-          schema: 
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateTodo.Arn}/invocations
+        responses:
+          default:
+            statusCode: "201"
+        httpMethod: "POST"
+
+  /get/{id}:
+    get:
+      summary: "Fetches todo object using id param"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "OK"
+          content: {}
+        500:
+          description: "Internal Server Error"
+          content: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: uuid
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetTodo.Arn}/invocations
+        responses:
+          200:
+            description: OK response
+            schema:
+              $ref: "#/definitions/Todo"
+        httpMethod: "GET"
+
+  /update:
+    put:
+      summary: "Updates existing todo"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "OK"
+          content: {}
+        500:
+          description: "Internal Server Error"
+          content: {}
+      parameters:
+        - name: Todo
+          in: body
+          required: true
+          schema:
             $ref: "#/definitions/Todo"
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UpdateTodo.Arn}/invocations
+        responses:
+          default:
+            statusCode: "200"
+        httpMethod: "PUT"
+
+  /delete:
+    delete:
+      summary: "Deletes existing todo"
+    consumes:
+      - "application/json"
+    produces:
+      - "application/json"
+    responses:
+      200:
+        description: "OK"
+        content: {}
+      500:
+        description: "Internal Server Error"
+        content: {}
+    parameters: 
+      - name: id
+        in: body
+        required: true
+        type: uuid
+    x-amazon-apigateway-integration:
+      uri:
+        Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DeleteTodo.Arn}/invocations
+      responses:
+        default:
+          statusCode: "200"
+      httpMethod: "DELETE"
+
+
+
+  
+
+
+
+
+definitions:
+  Todo:
+    type: object
+    properties:
+      id:
+        type: uuid
+      todo:
+        type: string
+      
+    

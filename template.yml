@@ -6,6 +6,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: prod
+      DefinitionUri: ./swagger.yml
       Cors: "'*'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
@@ -114,3 +115,27 @@ Resources:
               Ref: MyApi
             Path: /delete
             Method: delete
+
+
+  ElasticsearchDomain: 
+    Type: 'AWS::Elasticsearch::Domain'
+    Properties:
+      DomainName: 'todo-es'
+      ElasticsearchClusterConfig: 
+        InstanceType: 't2.micro.elasticsearch'
+        InstanceCount: 1
+      EBSOptions: 
+        EBSEnabled: true
+        Iops: 0
+        VolumeSize: 10
+        VolumeType: 'standard'
+      AccessPolicies: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: 'Allow'
+            Principal: 
+              AWS: !GetAtt LambdaRole.Arn
+            Action: 'es:*'
+            Resource: '*'
+      AdvancedOptions: 
+      rest.action.multi.allow_explicit_index: 'true'
